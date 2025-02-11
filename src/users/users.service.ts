@@ -51,6 +51,15 @@ export class UsersService {
         return updatedUser;
     }
 
+    /**
+     * Pobieranie użytkownika po id
+     * @param id Id użytkownika
+     * @returns Zwraca obiekt użytkownika
+     */
+    async findOneById(id: number): Promise<UserEntity | null> {
+        return await this.userRepository.findOne({ where: { id } });
+    }
+
     async findOneByUsername(username: string): Promise<UserEntity | null> {
         return await this.userRepository.findOne({ where: { username } });
     }
