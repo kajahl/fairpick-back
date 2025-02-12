@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GiveawaysModule } from './giveaways/giveaways.module';
 import entities from './typeorm';
 import { PassportModule } from '@nestjs/passport';
 
@@ -26,8 +25,7 @@ import { PassportModule } from '@nestjs/passport';
             session: true,
         }),
         AuthModule,
-        UsersModule,
-        GiveawaysModule,
+        UsersModule
     ],
     controllers: [AppController],
     providers: [AppService],
