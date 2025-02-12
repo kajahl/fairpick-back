@@ -1,13 +1,18 @@
-import { Body, Controller, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Patch,
+    Post,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { EditUserDto } from 'src/dtos/EditUser.dto';
 import { UsersService } from './users.service';
 import { AddUserDto } from 'src/dtos/AddUser.dto';
 
 @Controller('users')
 export class UsersController {
-    constructor(
-        private readonly usersService: UsersService
-    ) {}
+    constructor(private readonly usersService: UsersService) {}
 
     @Post('add')
     @UsePipes(ValidationPipe)

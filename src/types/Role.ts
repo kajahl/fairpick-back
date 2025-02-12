@@ -3,4 +3,4 @@ export type Role = {
     rank: number;
     name: string;
     description: string;
-}
+};

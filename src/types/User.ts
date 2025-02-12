@@ -1,4 +1,4 @@
-import { Role } from "./Role";
+import { Role } from './Role';
 
 export type User = {
     id: number;
@@ -6,4 +6,4 @@ export type User = {
     email: string;
     password: string;
     role: Role;
-}
+};

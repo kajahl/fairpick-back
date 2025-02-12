@@ -42,7 +42,7 @@ export type TwitchUserWinner = {
     userId: string;
     user: TwitchGiveawayParticipant;
     twitchUser: any; // Twitch User Object
-    
+
     // Snapshot of state at the time of the draw
     snapshot: TwitchGiveawaySnapshot;
 };
@@ -80,21 +80,30 @@ export default class TwitchGiveaway {
         const timestamp = new Date().toISOString();
 
         const snapshot = this.getSnapshot();
-        const filteredParticipants = TwitchGiveaway.FilterParticipants(snapshot.participants, filter);
-        const participantLines : string[][] = filteredParticipants.map((p) => {
+        const filteredParticipants = TwitchGiveaway.FilterParticipants(
+            snapshot.participants,
+            filter,
+        );
+        const participantLines: string[][] = filteredParticipants.map((p) => {
             const line = TwitchGiveaway.ParticipantToLine(p);
-            const multiplier = TwitchGiveaway.GetMultiplier(p, additionalOptions);
+            const multiplier = TwitchGiveaway.GetMultiplier(
+                p,
+                additionalOptions,
+            );
             return Array(multiplier).fill(line);
         });
         const lines = participantLines.flat();
         const allLines = lines.join('\n');
-        const hash = require('crypto').createHash('sha256').update(allLines).digest('hex');
+        const hash = require('crypto')
+            .createHash('sha256')
+            .update(allLines)
+            .digest('hex');
         const numberFromHash = parseInt(hash, 16);
         const winnerIndex = numberFromHash % lines.length;
         const winnerLine = lines[winnerIndex];
         const winnerId = TwitchGiveaway.LineToParticipantId(winnerLine);
         const winner = snapshot.participants.find((p) => p.userId === winnerId);
-        if(!winner) throw new Error('Winner not found');
+        if (!winner) throw new Error('Winner not found');
         return {
             drawId,
             timestamp,

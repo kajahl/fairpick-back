@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+    BadRequestException,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EditUserDto } from 'src/dtos/EditUser.dto';
 import { User as UserEntity } from 'src/typeorm';
@@ -10,7 +15,8 @@ import { AddUserDto } from 'src/dtos/AddUser.dto';
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
     ) {}
 
     /**
@@ -24,7 +30,9 @@ export class UsersService {
         });
 
         if (existingUser) {
-            throw new BadRequestException('User with this username or email already exists');
+            throw new BadRequestException(
+                'User with this username or email already exists',
+            );
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -42,12 +50,19 @@ export class UsersService {
      * @returns Zwraca obiekt użytkownika (aktualizowany obiekt)
      */
     async editUser(id: number, user: EditUserDto): Promise<User> {
-        const existingUser = await this.userRepository.findOne({ where: { id } });
+        const existingUser = await this.userRepository.findOne({
+            where: { id },
+        });
         if (!existingUser) throw new NotFoundException('User not found');
 
         await this.userRepository.update(id, user);
-        const updatedUser = await this.userRepository.findOne({ where: { id } });
-        if(updatedUser === null) throw new InternalServerErrorException('User not updated. Contact with support');
+        const updatedUser = await this.userRepository.findOne({
+            where: { id },
+        });
+        if (updatedUser === null)
+            throw new InternalServerErrorException(
+                'User not updated. Contact with support',
+            );
         return updatedUser;
     }
 

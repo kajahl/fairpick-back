@@ -35,8 +35,8 @@ async function bootstrap() {
             store: new TypeormStore({
                 cleanupLimit: 2,
                 limitSubquery: false,
-                ttl: 86400
-            }).connect(sessionRepository)
+                ttl: 86400,
+            }).connect(sessionRepository),
         }),
     );
     app.use(passport.initialize());
