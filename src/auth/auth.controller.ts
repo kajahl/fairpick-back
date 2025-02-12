@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { LocalAuthLoginGuard } from './guards/local.guard';
 import { Request } from 'express';
-import { AuthenticatedGuard } from './guards/authenticated.guard';
+import { AuthenticatedGuard, NotAuthenticatedGuard } from './guards/authenticated.guard';
 
 @Controller('auth')
 export class AuthController {
     @Post('login')
+    @UseGuards(NotAuthenticatedGuard)
     @UseGuards(LocalAuthLoginGuard)
-    async login(@Req() req: any) {}
+    async login(@Req() req: Request) {}
 
     @Get('me')
     @UseGuards(AuthenticatedGuard)
@@ -16,7 +17,13 @@ export class AuthController {
     }
 
     @Post('logout')
-    async logout(@Req() req: any) {
-        req.logout();
+    @UseGuards(AuthenticatedGuard)
+    async logout(@Req() req: Request) {
+        req.logout({
+            keepSessionInfo: true
+        }, (err: any) => {
+            console.error(err);
+        });
+        return null;
     }
 }
