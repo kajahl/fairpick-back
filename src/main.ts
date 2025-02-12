@@ -2,9 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { TypeormStore } from 'connect-typeorm';
+import { getRepository, createConnection } from 'typeorm';
+import { SessionEntity } from './typeorm';
 
 async function bootstrap() {
+    await createConnection({
+        type: 'mysql',
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        entities: [SessionEntity],
+        synchronize: process.env.ENV === 'development',
+    });
+
     const app = await NestFactory.create(AppModule);
+    const sessionRepository = getRepository(SessionEntity);
     app.setGlobalPrefix('api/v1');
     app.use(
         session({
@@ -17,6 +32,11 @@ async function bootstrap() {
                 secure: process.env.ENV != 'development',
                 sameSite: process.env.ENV === 'development' ? 'none' : 'strict',
             },
+            store: new TypeormStore({
+                cleanupLimit: 2,
+                limitSubquery: false,
+                ttl: 86400
+            }).connect(sessionRepository)
         }),
     );
     app.use(passport.initialize());
