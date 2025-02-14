@@ -10,7 +10,9 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
     imports: [
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
         TypeOrmModule.forRoot({
             type: 'mysql',
             host: process.env.DB_HOST,
