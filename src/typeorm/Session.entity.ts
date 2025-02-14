@@ -7,7 +7,7 @@ import {
     PrimaryColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'api_sessions' })
 export class SessionEntity implements ISession {
     @Index()
     @Column('bigint')

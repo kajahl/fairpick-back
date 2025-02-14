@@ -2,12 +2,14 @@ import {
     Column,
     Entity,
     ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn,
     Unique,
 } from 'typeorm';
 import { Role } from './Role';
+import { TwitchUserEntity } from './TwitchUser.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 @Unique(['email', 'username'])
 export class User {
     @PrimaryGeneratedColumn({ type: 'int' })
@@ -32,4 +34,7 @@ export class User {
 
     @ManyToOne(() => Role, (role) => role.id, { nullable: true })
     role: Role;
+
+    @OneToOne(() => TwitchUserEntity, twitchUser => twitchUser.user)
+    twitchUser: TwitchUserEntity;
 }

@@ -1,7 +1,8 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { User } from "./User";
 
-@Entity()
-export class TwitchUser {
+@Entity({ name: 'twitch_users' })
+export class TwitchUserEntity {
     @Column({ type: 'varchar', length: 255, primary: true })
     id: string;
 
@@ -24,4 +25,8 @@ export class TwitchUser {
         default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date | null;
+
+    @OneToOne(() => User, user => user.twitchUser)
+    @JoinColumn()
+    user: User;
 }
