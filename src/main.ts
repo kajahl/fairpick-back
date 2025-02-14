@@ -5,6 +5,8 @@ import * as passport from 'passport';
 import { TypeormStore } from 'connect-typeorm';
 import { getRepository, createConnection } from 'typeorm';
 import { SessionEntity } from './typeorm';
+import * as cookieParser from 'cookie-parser';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
     await createConnection({
@@ -18,7 +20,7 @@ async function bootstrap() {
         synchronize: process.env.ENV === 'development',
     });
 
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
     const sessionRepository = getRepository(SessionEntity);
     app.setGlobalPrefix('api/v1');
     app.use(
@@ -39,6 +41,7 @@ async function bootstrap() {
             }).connect(sessionRepository),
         }),
     );
+    app.use(cookieParser(process.env.COOKIE_SECRET || 'secret', {}));
     app.use(passport.initialize());
     app.use(passport.session());
     await app.listen(process.env.PORT ?? 3000);
